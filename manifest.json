@@ -1,0 +1,14 @@
+{
+    "manifest_version": 2,
+    "name": "Wanderer's Health Adjuster",
+    "version": "1.0",
+    "description": "Add a swipeable widget to easily adjust hit points for Wanderer's Guide characters.",
+    "permissions": ["activeTab", "storage"],
+    "content_scripts": [
+      {
+        "matches": ["*://wanderersguide.app/profile/characters/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
+  
