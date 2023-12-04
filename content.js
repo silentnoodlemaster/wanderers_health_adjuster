@@ -1,4 +1,3 @@
-// Your widget HTML code
 const widgetHTML = `
   <div id="widget" onwheel="handleSwipe(event)" onmousedown="startDrag(event)">
     <span id="value">0</span>
@@ -29,17 +28,21 @@ const widgetHTML = `
   </style>
 `;
 
-// Inject the widget into the webpage
 function injectWidget() {
   const widgetContainer = document.createElement('div');
   widgetContainer.innerHTML = widgetHTML;
   const healthContainer = document.getElementById('healthPointsContainer');
   healthContainer.appendChild(widgetContainer);
 }
-let currentValue = 0;
 
 function updateValue(delta) {
+  console.log('updateValue', delta);
   currentValue += delta;
+  document.getElementById('value').innerText = currentValue;
+}
+
+function reset() {
+  currentValue = 0;
   document.getElementById('value').innerText = currentValue;
 }
 
@@ -54,7 +57,6 @@ function handleDrag(e) {
   updateValue(delta);
 }
 
-let startX = 0;
 
 function startDrag(e) {
   startX = e.clientX;
@@ -68,14 +70,19 @@ function stopDrag() {
 }
 
 function adjustHealth() {
+  console.log('adjustHealth', currentValue);
   document.getElementById('char-current-health').click();
-  document.getElementById('current-health-input').value += currentValue;
-  updateValue(currentValue * -1);
-  document.getElementById('current-health-input').dispatchEvent(new Event('input'));
-  document.getElementById('current-health-input').dispatchEvent(new Event('change'));
-  document.getElementById('current-health-input').dispatchEvent(new Event('blur'));
-
+  const input = document.getElementById('current-health-input');
+  input.value = currentValue+parseInt(input.value);
+  reset();
+  input.dispatchEvent(new Event('input'));
+  input.dispatchEvent(new Event('change'));
+  input.dispatchEvent(new Event('blur'));
+  
 }
+
+let currentValue = 0;
+let startX = 0;
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', injectWidget);
