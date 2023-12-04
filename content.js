@@ -1,5 +1,5 @@
 const widgetHTML = `
-  <div id="widget" onwheel="handleSwipe(event)" onmousedown="startDrag(event)">
+  <div id="widget" ontouchstart="startSwipe(event)" onmousedown="startDrag(event)">
     <span id="value">0</span>
   </div>
   <button class="button has-txt-value-string" onClick="adjustHealth()">Adjust Health</button>
@@ -46,10 +46,6 @@ function reset() {
   document.getElementById('value').innerText = currentValue;
 }
 
-function handleSwipe(e) {
-  const delta = e.deltaX > 0 ? 1 : -1;
-  updateValue(delta);
-}
 
 function handleDrag(e) {
   const delta = e.clientX - startX;
@@ -57,6 +53,11 @@ function handleDrag(e) {
   updateValue(delta);
 }
 
+function handleSwipe(e) {
+  const delta = e.touches[0].clientX - startX;
+  startX = e.touches[0].clientX;
+  updateValue(delta);
+}
 
 function startDrag(e) {
   startX = e.clientX;
@@ -64,9 +65,20 @@ function startDrag(e) {
   document.addEventListener('mouseup', stopDrag);
 }
 
+function startSwipe(e) {
+  startX = e.touches[0].clientX;
+  document.addEventListener('touchmove', handleSwipe);
+  document.addEventListener('touchend', stopSwipe);
+}
+
 function stopDrag() {
   document.removeEventListener('mousemove', handleDrag);
   document.removeEventListener('mouseup', stopDrag);
+}
+
+function stopSwipe() {
+  document.removeEventListener('touchmove', handleSwipe);
+  document.removeEventListener('touchend', stopSwipe);
 }
 
 function adjustHealth() {
@@ -95,4 +107,6 @@ exportFunction(handleSwipe, window, {defineAs: 'handleSwipe'});
 exportFunction(handleDrag, window, {defineAs: 'handleDrag'});
 exportFunction(startDrag, window, {defineAs: 'startDrag'});
 exportFunction(stopDrag, window, {defineAs: 'stopDrag'});
+exportFunction(startSwipe, window, {defineAs: 'startSwipe'});
+exportFunction(stopSwipe, window, {defineAs: 'stopSwipe'});
 exportFunction(updateValue, window, {defineAs: 'updateValue'});
